@@ -1,0 +1,10 @@
+{
+  "name": "callan-elizabeth-photography",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "rm -rf dist && mkdir -p dist && cp index.html styles.css script.js favicon.svg dist/ && cp -R assets dist/assets"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
