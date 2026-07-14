@@ -161,6 +161,7 @@ a {
 
 .hero-image {
   z-index: 0;
+  object-position: center 34%;
 }
 
 .hero-overlay {
