@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css?v=20260728-hero4k3">
+    <link rel="stylesheet" href="/styles.css?v=20260728-contact">
   </head>
   <body>
     <header class="site-header" data-header>
@@ -144,8 +144,13 @@
             <li><span>04</span><strong>We capture</strong><p>Then we make photographs you can keep close.</p></li>
           </ol>
         </div>
-        <form class="contact-form" data-contact-form>
+        <form class="contact-form" action="https://formsubmit.co/Callan.sovik@gmail.com" method="POST" data-contact-form>
           <h3>Tell me about your session</h3>
+          <input type="hidden" name="_subject" value="New photography inquiry from the website">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_next" value="https://callanelizabethphotography.com/?inquiry=sent#contact">
+          <input type="hidden" name="_url" value="https://callanelizabethphotography.com/#contact">
+          <input class="form-honeypot" name="_honey" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
           <label>
             Your Name
             <input name="name" type="text" autocomplete="name" required placeholder="Jane Doe">
@@ -156,7 +161,7 @@
           </label>
           <label>
             Session Type
-            <select name="sessionType">
+            <select name="sessionType" required>
               <option>Family Session</option>
               <option>Couples Session</option>
               <option>Portrait Session</option>
@@ -166,10 +171,10 @@
           </label>
           <label>
             Your Message
-            <textarea name="message" rows="4" placeholder="Who would be in the photos, and what are you hoping to remember?"></textarea>
+            <textarea name="message" rows="4" required placeholder="Who would be in the photos, and what are you hoping to remember?"></textarea>
           </label>
           <button class="button primary form-button" type="submit">Send Inquiry</button>
-          <p class="form-note" data-form-note>No pressure, ever. Just reach out and we will take it from there.</p>
+          <p class="form-note" data-form-note aria-live="polite">No pressure, ever. Just reach out and we will take it from there.</p>
         </form>
       </section>
     </main>
@@ -247,6 +252,6 @@
       </div>
     </dialog>
 
-    <script src="/script.js?v=20260728-mosaic3"></script>
+    <script src="/script.js?v=20260728-contact"></script>
   </body>
 </html>

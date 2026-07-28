@@ -1070,12 +1070,37 @@ figcaption {
   cursor: pointer;
 }
 
+.form-button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none;
+}
+
 .form-note {
   margin: 16px 0 0;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.5;
   text-align: center;
+}
+
+.form-note.is-success {
+  color: var(--sage-dark);
+  font-weight: 600;
+}
+
+.form-note.is-error {
+  color: #8a493b;
+  font-weight: 600;
+}
+
+.form-honeypot {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
 }
 
 .site-footer {

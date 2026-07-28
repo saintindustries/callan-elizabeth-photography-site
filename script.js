@@ -3,7 +3,9 @@ const menuToggle = document.querySelector("[data-menu-toggle]");
 const nav = document.querySelector("[data-nav]");
 const form = document.querySelector("[data-contact-form]");
 const formNote = document.querySelector("[data-form-note]");
-const contactEmail = "hello@callanelizabethphotography.com";
+const formButton = form.querySelector(".form-button");
+const contactEndpoint = "https://formsubmit.co/ajax/Callan.sovik@gmail.com";
+const contactEmail = "Callan.sovik@gmail.com";
 const albumDialog = document.querySelector("[data-album-dialog]");
 const albumClose = document.querySelector("[data-album-close]");
 const albumBrowser = document.querySelector("[data-album-browser]");
@@ -380,24 +382,66 @@ window.addEventListener("resize", () => {
   mosaicResizeFrame = window.requestAnimationFrame(layoutAlbumMosaic);
 }, { passive: true });
 
-form.addEventListener("submit", (event) => {
+const inquiryStatus = new URLSearchParams(window.location.search).get("inquiry");
+
+if (inquiryStatus === "sent") {
+  formNote.textContent = "Thank you — your inquiry was sent to Callan. She will be in touch soon.";
+  formNote.classList.add("is-success");
+}
+
+form.addEventListener("submit", async (event) => {
   event.preventDefault();
   const data = new FormData(form);
   const name = String(data.get("name") || "").trim();
   const email = String(data.get("email") || "").trim();
   const sessionType = String(data.get("sessionType") || "").trim();
   const message = String(data.get("message") || "").trim();
-  const subject = `Photography inquiry from ${name || "a new client"}`;
-  const body = [
-    `Name: ${name}`,
-    `Email: ${email}`,
-    `Session type: ${sessionType}`,
-    "",
-    "Message:",
-    message || "I would love to learn more about booking a session.",
-  ].join("\n");
+  const honeypot = String(data.get("_honey") || "").trim();
 
-  formNote.textContent = "Your email draft is opening now. If it does not open, email hello@callanelizabethphotography.com directly.";
-  formNote.setAttribute("role", "status");
-  window.location.href = `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  if (honeypot) {
+    form.reset();
+    formNote.textContent = "Thank you — your inquiry was sent to Callan. She will be in touch soon.";
+    formNote.classList.remove("is-error");
+    formNote.classList.add("is-success");
+    return;
+  }
+
+  formButton.disabled = true;
+  formButton.textContent = "Sending…";
+  formNote.textContent = "Sending your inquiry securely…";
+  formNote.classList.remove("is-success", "is-error");
+
+  try {
+    const response = await fetch(contactEndpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        "Session type": sessionType,
+        message,
+        _subject: `New ${sessionType} inquiry from ${name}`,
+        _template: "table",
+        _url: "https://callanelizabethphotography.com/#contact",
+      }),
+    });
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok || result.success === false || result.success === "false") {
+      throw new Error("Form delivery failed");
+    }
+
+    form.reset();
+    formNote.textContent = "Thank you — your inquiry was sent to Callan. She will be in touch soon.";
+    formNote.classList.add("is-success");
+  } catch (error) {
+    formNote.textContent = `We could not send your inquiry. Please try again, or email Callan directly at ${contactEmail}.`;
+    formNote.classList.add("is-error");
+  } finally {
+    formButton.disabled = false;
+    formButton.textContent = "Send Inquiry";
+  }
 });
