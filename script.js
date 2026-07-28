@@ -6,29 +6,46 @@ const formNote = document.querySelector("[data-form-note]");
 const contactEmail = "hello@callanelizabethphotography.com";
 const albumDialog = document.querySelector("[data-album-dialog]");
 const albumClose = document.querySelector("[data-album-close]");
+const albumBrowser = document.querySelector("[data-album-browser]");
+const albumScroll = document.querySelector("[data-album-scroll]");
+const albumMosaic = document.querySelector("[data-album-mosaic]");
 const albumPhotoFrame = document.querySelector(".album-photo-frame");
 const albumImage = document.querySelector("[data-album-image]");
 const albumKicker = document.querySelector("[data-album-kicker]");
 const albumTitle = document.querySelector("[data-album-title]");
 const albumDescription = document.querySelector("[data-album-description]");
+const albumCount = document.querySelector("[data-album-count]");
+const photoViewer = document.querySelector("[data-photo-viewer]");
+const photoBack = document.querySelector("[data-photo-back]");
+const photoKicker = document.querySelector("[data-photo-kicker]");
+const photoTitle = document.querySelector("[data-photo-title]");
+const photoDescription = document.querySelector("[data-photo-description]");
 const albumIndex = document.querySelector("[data-album-index]");
 const albumTotal = document.querySelector("[data-album-total]");
 const albumControls = document.querySelector("[data-album-controls]");
 const albumPrevious = document.querySelector("[data-album-previous]");
 const albumNext = document.querySelector("[data-album-next]");
-const albumInquiry = document.querySelector("[data-album-inquiry]");
+const albumInquiryLinks = document.querySelectorAll("[data-album-inquiry]");
 const albumTriggers = document.querySelectorAll("[data-album]");
 
-function buildAlbumImages(directory, total, altLabel) {
+function buildAlbumImages(directory, total, altLabel, descriptions = []) {
   return Array.from({ length: total }, (_, index) => {
     const number = String(index + 1).padStart(2, "0");
 
     return {
       src: `/assets/galleries/${directory}/${number}.jpg`,
       alt: `${altLabel}, photograph ${index + 1} of ${total}`,
+      description: descriptions[index] || "",
     };
   });
 }
+
+const imageDescriptions = {
+  families: [],
+  couples: [],
+  portraits: [],
+  pets: [],
+};
 
 const albums = {
   families: {
@@ -36,34 +53,36 @@ const albums = {
     title: "Families",
     description: "The closeness, the movement, and the small in-between moments that make this season unmistakably yours.",
     inquiry: "Inquire about a family session",
-    images: buildAlbumImages("families", 34, "A warm, candid family session"),
+    images: buildAlbumImages("families", 34, "A warm, candid family session", imageDescriptions.families),
   },
   couples: {
     kicker: "Couples sessions",
     title: "Couples",
     description: "Honest photographs with room for affection, laughter, and all the quiet ways you already know one another.",
     inquiry: "Inquire about a couples session",
-    images: buildAlbumImages("couples", 21, "A natural, affectionate couples session"),
+    images: buildAlbumImages("couples", 21, "A natural, affectionate couples session", imageDescriptions.couples),
   },
   portraits: {
     kicker: "Portrait sessions",
     title: "Portraits",
     description: "Relaxed, expressive portraits shaped by natural light and the confidence that comes from feeling like yourself.",
     inquiry: "Inquire about a portrait session",
-    images: buildAlbumImages("portraits", 25, "An expressive natural-light portrait"),
+    images: buildAlbumImages("portraits", 25, "An expressive natural-light portrait", imageDescriptions.portraits),
   },
   pets: {
     kicker: "Pet sessions",
     title: "Pets",
     description: "The familiar expressions and faithful companionship that deserve a permanent place in your family story.",
     inquiry: "Inquire about a pet session",
-    images: buildAlbumImages("pets", 15, "A heartfelt pet session"),
+    images: buildAlbumImages("pets", 15, "A heartfelt pet session", imageDescriptions.pets),
   },
 };
 
 let activeAlbum = null;
 let activeImageIndex = 0;
 let lastAlbumTrigger = null;
+let lastAlbumTile = null;
+let albumScrollPosition = 0;
 let swipeStartX = null;
 let swipeStartY = null;
 
@@ -92,6 +111,68 @@ function formatAlbumNumber(value) {
   return String(value).padStart(2, "0");
 }
 
+function sizeAlbumTile(tile, image) {
+  if (!image.naturalWidth || !image.naturalHeight) {
+    return;
+  }
+
+  const mosaicStyles = window.getComputedStyle(albumMosaic);
+  const rowHeight = Number.parseFloat(mosaicStyles.gridAutoRows);
+  const rowGap = Number.parseFloat(mosaicStyles.rowGap);
+  const renderedHeight = tile.clientWidth * (image.naturalHeight / image.naturalWidth);
+  const rowSpan = Math.ceil((renderedHeight + rowGap) / (rowHeight + rowGap));
+
+  tile.style.gridRowEnd = `span ${rowSpan}`;
+  tile.classList.add("is-laid-out");
+}
+
+function layoutAlbumMosaic() {
+  albumMosaic.querySelectorAll(".album-tile").forEach((tile) => {
+    const image = tile.querySelector("img");
+
+    if (image?.complete) {
+      sizeAlbumTile(tile, image);
+    }
+  });
+}
+
+function renderAlbumMosaic() {
+  if (!activeAlbum) {
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+  albumMosaic.replaceChildren();
+
+  activeAlbum.images.forEach((image, index) => {
+    const tile = document.createElement("button");
+    const tileImage = document.createElement("img");
+    const tileLabel = document.createElement("span");
+    const tileNumber = formatAlbumNumber(index + 1);
+
+    tile.className = "album-tile";
+    tile.type = "button";
+    tile.dataset.imageIndex = String(index);
+    tile.setAttribute("aria-label", `Open photograph ${index + 1} of ${activeAlbum.images.length}`);
+    tile.style.setProperty("--tile-index", String(index));
+
+    tileImage.src = image.src;
+    tileImage.alt = image.alt;
+    tileImage.loading = index < 6 ? "eager" : "lazy";
+    tileImage.decoding = "async";
+    tileImage.addEventListener("load", () => sizeAlbumTile(tile, tileImage));
+
+    tileLabel.className = "album-tile-label";
+    tileLabel.innerHTML = `<span>${tileNumber}</span><span>View photograph</span>`;
+
+    tile.append(tileImage, tileLabel);
+    fragment.append(tile);
+  });
+
+  albumMosaic.append(fragment);
+  requestAnimationFrame(layoutAlbumMosaic);
+}
+
 function renderAlbumImage() {
   if (!activeAlbum) {
     return;
@@ -102,6 +183,9 @@ function renderAlbumImage() {
   albumPhotoFrame.style.setProperty("--album-image", `url("${image.src}")`);
   albumImage.src = image.src;
   albumImage.alt = image.alt;
+  photoKicker.textContent = activeAlbum.kicker;
+  photoTitle.textContent = `Photograph ${formatAlbumNumber(activeImageIndex + 1)}`;
+  photoDescription.textContent = image.description || activeAlbum.description;
   albumIndex.textContent = formatAlbumNumber(activeImageIndex + 1);
   albumTotal.textContent = formatAlbumNumber(activeAlbum.images.length);
   albumControls.hidden = activeAlbum.images.length < 2;
@@ -117,6 +201,34 @@ function renderAlbumImage() {
   });
 }
 
+function openPhoto(imageIndex, tile) {
+  if (!activeAlbum) {
+    return;
+  }
+
+  activeImageIndex = imageIndex;
+  lastAlbumTile = tile;
+  albumScrollPosition = albumScroll.scrollTop;
+  renderAlbumImage();
+  albumBrowser.hidden = true;
+  photoViewer.hidden = false;
+  photoBack.focus();
+}
+
+function closePhoto() {
+  if (photoViewer.hidden) {
+    return;
+  }
+
+  photoViewer.hidden = true;
+  albumBrowser.hidden = false;
+
+  requestAnimationFrame(() => {
+    albumScroll.scrollTop = albumScrollPosition;
+    lastAlbumTile?.focus({ preventScroll: true });
+  });
+}
+
 function openAlbum(albumKey, trigger) {
   const selectedAlbum = albums[albumKey];
 
@@ -127,14 +239,23 @@ function openAlbum(albumKey, trigger) {
   activeAlbum = selectedAlbum;
   activeImageIndex = 0;
   lastAlbumTrigger = trigger;
+  lastAlbumTile = null;
+  albumScrollPosition = 0;
   albumKicker.textContent = selectedAlbum.kicker;
   albumTitle.textContent = selectedAlbum.title;
   albumDescription.textContent = selectedAlbum.description;
-  albumInquiry.textContent = selectedAlbum.inquiry;
-  renderAlbumImage();
+  albumCount.textContent = `${selectedAlbum.images.length} photographs`;
+  albumInquiryLinks.forEach((link) => {
+    link.textContent = selectedAlbum.inquiry;
+  });
+  albumScroll.setAttribute("aria-label", `${selectedAlbum.title} album photographs`);
+  renderAlbumMosaic();
+  photoViewer.hidden = true;
+  albumBrowser.hidden = false;
 
   document.body.classList.add("album-is-open");
   albumDialog.showModal();
+  albumScroll.scrollTop = 0;
   albumClose.focus();
 }
 
@@ -160,11 +281,22 @@ albumTriggers.forEach((trigger) => {
   });
 });
 
+albumMosaic.addEventListener("click", (event) => {
+  const tile = event.target.closest("[data-image-index]");
+
+  if (!tile) {
+    return;
+  }
+
+  openPhoto(Number(tile.dataset.imageIndex), tile);
+});
+
 albumImage.addEventListener("load", () => {
   albumImage.classList.remove("is-changing");
 });
 
 albumClose.addEventListener("click", closeAlbum);
+photoBack.addEventListener("click", closePhoto);
 albumPrevious.addEventListener("click", () => stepAlbum(-1));
 albumNext.addEventListener("click", () => stepAlbum(1));
 
@@ -190,12 +322,14 @@ albumPhotoFrame.addEventListener("touchend", (event) => {
   }
 }, { passive: true });
 
-albumInquiry.addEventListener("click", (event) => {
-  event.preventDefault();
-  lastAlbumTrigger = null;
-  closeAlbum();
-  window.location.hash = "contact";
-  document.querySelector("#contact")?.scrollIntoView();
+albumInquiryLinks.forEach((link) => {
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    lastAlbumTrigger = null;
+    closeAlbum();
+    window.location.hash = "contact";
+    document.querySelector("#contact")?.scrollIntoView();
+  });
 });
 
 albumDialog.addEventListener("click", (event) => {
@@ -204,10 +338,21 @@ albumDialog.addEventListener("click", (event) => {
   }
 });
 
+albumDialog.addEventListener("cancel", (event) => {
+  if (!photoViewer.hidden) {
+    event.preventDefault();
+    closePhoto();
+  }
+});
+
 albumDialog.addEventListener("close", () => {
   document.body.classList.remove("album-is-open");
+  photoViewer.hidden = true;
+  albumBrowser.hidden = false;
   activeAlbum = null;
   activeImageIndex = 0;
+  lastAlbumTile = null;
+  albumScrollPosition = 0;
 
   if (lastAlbumTrigger) {
     lastAlbumTrigger.focus();
@@ -215,7 +360,7 @@ albumDialog.addEventListener("close", () => {
 });
 
 document.addEventListener("keydown", (event) => {
-  if (!albumDialog.open) {
+  if (!albumDialog.open || photoViewer.hidden) {
     return;
   }
 
@@ -227,6 +372,13 @@ document.addEventListener("keydown", (event) => {
     stepAlbum(1);
   }
 });
+
+let mosaicResizeFrame = null;
+
+window.addEventListener("resize", () => {
+  window.cancelAnimationFrame(mosaicResizeFrame);
+  mosaicResizeFrame = window.requestAnimationFrame(layoutAlbumMosaic);
+}, { passive: true });
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();

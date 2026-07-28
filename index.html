@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/styles.css?v=20260728-mosaic3">
   </head>
   <body>
     <header class="site-header" data-header>
@@ -197,33 +197,56 @@
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </button>
-        <div class="album-stage">
-          <figure class="album-photo-frame">
-            <img alt="" decoding="async" data-album-image>
-          </figure>
-          <div class="album-details">
+        <section class="album-browser" data-album-browser>
+          <header class="album-browser-header">
             <div>
               <p class="eyebrow" data-album-kicker></p>
               <h2 id="album-title" data-album-title></h2>
-              <p class="album-description" data-album-description></p>
+              <p class="album-browser-description" data-album-description></p>
             </div>
-            <div class="album-footer">
-              <div class="album-progress" aria-live="polite">
-                <span data-album-index>01</span>
-                <span class="album-progress-line" aria-hidden="true"></span>
-                <span data-album-total>01</span>
-              </div>
-              <div class="album-controls" data-album-controls>
-                <button type="button" data-album-previous aria-label="Previous photograph">←</button>
-                <button type="button" data-album-next aria-label="Next photograph">→</button>
-              </div>
+            <div class="album-browser-meta">
+              <p data-album-count></p>
               <a class="text-link album-inquiry" href="#contact" data-album-inquiry></a>
             </div>
+          </header>
+          <div class="album-scroll" data-album-scroll tabindex="0">
+            <div class="album-mosaic" data-album-mosaic></div>
           </div>
-        </div>
+        </section>
+
+        <section class="photo-viewer" data-photo-viewer hidden aria-label="Selected photograph">
+          <button class="photo-back" type="button" data-photo-back>
+            <span aria-hidden="true">←</span>
+            <span>Back to album</span>
+          </button>
+          <div class="album-stage">
+            <figure class="album-photo-frame">
+              <img alt="" decoding="async" data-album-image>
+            </figure>
+            <div class="album-details">
+              <div>
+                <p class="eyebrow" data-photo-kicker></p>
+                <h2 class="photo-title" data-photo-title></h2>
+                <p class="album-description" data-photo-description></p>
+              </div>
+              <div class="album-footer">
+                <div class="album-progress" aria-live="polite">
+                  <span data-album-index>01</span>
+                  <span class="album-progress-line" aria-hidden="true"></span>
+                  <span data-album-total>01</span>
+                </div>
+                <div class="album-controls" data-album-controls>
+                  <button type="button" data-album-previous aria-label="Previous photograph">←</button>
+                  <button type="button" data-album-next aria-label="Next photograph">→</button>
+                </div>
+                <a class="text-link album-inquiry" href="#contact" data-album-inquiry></a>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </dialog>
 
-    <script src="/script.js"></script>
+    <script src="/script.js?v=20260728-mosaic3"></script>
   </body>
 </html>
