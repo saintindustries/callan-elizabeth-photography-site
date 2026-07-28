@@ -429,8 +429,11 @@ form.addEventListener("submit", async (event) => {
       }),
     });
     const result = await response.json().catch(() => ({}));
+    const activationPending =
+      (result.success === false || result.success === "false") &&
+      String(result.message || "").toLowerCase().includes("needs activation");
 
-    if (!response.ok || result.success === false || result.success === "false") {
+    if (!response.ok || ((result.success === false || result.success === "false") && !activationPending)) {
       throw new Error("Form delivery failed");
     }
 
