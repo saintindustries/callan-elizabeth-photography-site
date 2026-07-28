@@ -1208,6 +1208,10 @@ figcaption {
       linear-gradient(90deg, rgba(34, 30, 24, 0.44), rgba(34, 30, 24, 0.16));
   }
 
+  .hero-image {
+    object-position: 62% 34%;
+  }
+
   .hero-actions {
     flex-direction: column;
     align-items: stretch;
