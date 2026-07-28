@@ -64,26 +64,38 @@
           <p>A few favorite kinds of sessions, all photographed with a gentle documentary eye.</p>
         </div>
         <div class="gallery-grid">
-          <a class="gallery-card" href="#contact" aria-label="Book a family photography session">
+          <button class="gallery-card" type="button" data-album="families" aria-haspopup="dialog" aria-label="View the families album">
             <img src="/assets/families.jpg" alt="A mother smiling with her two young children outdoors" loading="lazy">
-            <span>01</span>
-            <strong>Families</strong>
-          </a>
-          <a class="gallery-card" href="#contact" aria-label="Book a couples photography session">
+            <span class="gallery-card-copy">
+              <span class="gallery-card-number">01</span>
+              <strong>Families</strong>
+              <span class="gallery-card-cta">View album <span aria-hidden="true">↗</span></span>
+            </span>
+          </button>
+          <button class="gallery-card" type="button" data-album="couples" aria-haspopup="dialog" aria-label="View the couples album">
             <img src="/assets/couples.jpg" alt="A couple embracing in a black and white portrait" loading="lazy">
-            <span>02</span>
-            <strong>Couples</strong>
-          </a>
-          <a class="gallery-card" href="#contact" aria-label="Book a portrait photography session">
+            <span class="gallery-card-copy">
+              <span class="gallery-card-number">02</span>
+              <strong>Couples</strong>
+              <span class="gallery-card-cta">View album <span aria-hidden="true">↗</span></span>
+            </span>
+          </button>
+          <button class="gallery-card" type="button" data-album="portraits" aria-haspopup="dialog" aria-label="View the portraits album">
             <img src="/assets/portraits.jpg" alt="A smiling outdoor portrait with a soft green background" loading="lazy">
-            <span>03</span>
-            <strong>Portraits</strong>
-          </a>
-          <a class="gallery-card" href="#contact" aria-label="Book a pet photography session">
+            <span class="gallery-card-copy">
+              <span class="gallery-card-number">03</span>
+              <strong>Portraits</strong>
+              <span class="gallery-card-cta">View album <span aria-hidden="true">↗</span></span>
+            </span>
+          </button>
+          <button class="gallery-card" type="button" data-album="pets" aria-haspopup="dialog" aria-label="View the pets album">
             <img src="/assets/pets.jpg" alt="A golden retriever sitting in the grass" loading="lazy">
-            <span>04</span>
-            <strong>Pets</strong>
-          </a>
+            <span class="gallery-card-copy">
+              <span class="gallery-card-number">04</span>
+              <strong>Pets</strong>
+              <span class="gallery-card-cta">View album <span aria-hidden="true">↗</span></span>
+            </span>
+          </button>
         </div>
       </section>
 
@@ -178,6 +190,39 @@
       </nav>
       <a class="instagram-link" href="https://www.instagram.com/callanelizabeth/" target="_blank" rel="noreferrer">Instagram</a>
     </footer>
+
+    <dialog class="album-dialog" data-album-dialog aria-labelledby="album-title">
+      <div class="album-shell">
+        <button class="album-close" type="button" data-album-close aria-label="Close album">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </button>
+        <div class="album-stage">
+          <figure class="album-photo-frame">
+            <img alt="" data-album-image>
+          </figure>
+          <div class="album-details">
+            <div>
+              <p class="eyebrow" data-album-kicker></p>
+              <h2 id="album-title" data-album-title></h2>
+              <p class="album-description" data-album-description></p>
+            </div>
+            <div class="album-footer">
+              <div class="album-progress" aria-live="polite">
+                <span data-album-index>01</span>
+                <span class="album-progress-line" aria-hidden="true"></span>
+                <span data-album-total>01</span>
+              </div>
+              <div class="album-controls" data-album-controls>
+                <button type="button" data-album-previous aria-label="Previous photograph">←</button>
+                <button type="button" data-album-next aria-label="Next photograph">→</button>
+              </div>
+              <a class="text-link album-inquiry" href="#contact" data-album-inquiry></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </dialog>
 
     <script src="/script.js"></script>
   </body>

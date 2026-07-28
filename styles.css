@@ -17,6 +17,7 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -24,6 +25,10 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: "Source Sans 3", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body.album-is-open {
+  overflow: hidden;
 }
 
 img {
@@ -317,13 +322,19 @@ h1 {
 .gallery-card {
   position: relative;
   min-height: 500px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   overflow: hidden;
+  padding: 0;
+  border: 0;
   border-radius: 4px;
+  background: #2f2b25;
   color: var(--shell);
-  text-decoration: none;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
   box-shadow: var(--shadow);
 }
 
@@ -342,22 +353,27 @@ h1 {
   background: linear-gradient(180deg, rgba(24, 20, 16, 0.02), rgba(24, 20, 16, 0.62));
 }
 
-.gallery-card span,
-.gallery-card strong {
+.gallery-card-copy {
   position: relative;
   z-index: 1;
-  display: block;
+  display: flex;
+  min-height: 178px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 20px 28px;
   text-align: center;
 }
 
-.gallery-card span {
+.gallery-card-number {
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.3em;
 }
 
 .gallery-card strong {
-  margin: 9px 0 34px;
+  display: block;
+  margin: 9px 0 18px;
   font-family: "Cormorant Garamond", Georgia, serif;
   font-size: clamp(30px, 3vw, 42px);
   font-weight: 500;
@@ -365,8 +381,274 @@ h1 {
   text-transform: uppercase;
 }
 
+.gallery-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 250, 242, 0.42);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.84;
+  transition: gap 0.25s ease, opacity 0.25s ease;
+}
+
 .gallery-card:hover img {
   transform: scale(1.055);
+}
+
+.gallery-card:hover .gallery-card-cta {
+  gap: 12px;
+  opacity: 1;
+}
+
+.gallery-card:focus-visible {
+  outline: 3px solid var(--sage);
+  outline-offset: 4px;
+}
+
+.album-dialog {
+  width: min(1180px, calc(100vw - 40px));
+  height: min(820px, calc(100dvh - 40px));
+  max-width: none;
+  max-height: none;
+  overflow: visible;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--ink);
+}
+
+.album-dialog::backdrop {
+  background: rgba(27, 24, 20, 0.88);
+  backdrop-filter: blur(12px);
+}
+
+.album-dialog[open] {
+  animation: album-enter 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.album-dialog[open]::backdrop {
+  animation: album-backdrop-enter 0.3s ease;
+}
+
+.album-shell,
+.album-stage {
+  height: 100%;
+}
+
+.album-shell {
+  position: relative;
+  overflow: hidden;
+  border-radius: inherit;
+  background: var(--shell);
+  box-shadow: 0 28px 90px rgba(8, 7, 6, 0.42);
+}
+
+.album-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(310px, 0.7fr);
+}
+
+.album-photo-frame {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  place-items: center;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: #28251f;
+}
+
+.album-photo-frame::before,
+.album-photo-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.album-photo-frame::before {
+  z-index: -2;
+  inset: -30px;
+  background-image: var(--album-image);
+  background-position: center;
+  background-size: cover;
+  filter: blur(22px) brightness(0.48) saturate(0.72);
+  transform: scale(1.06);
+}
+
+.album-photo-frame::after {
+  z-index: -1;
+  background: rgba(31, 28, 24, 0.28);
+}
+
+.album-photo-frame img {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  box-shadow: 0 0 60px rgba(10, 9, 8, 0.2);
+  transition: opacity 0.2s ease;
+}
+
+.album-photo-frame img.is-changing {
+  opacity: 0.35;
+}
+
+.album-details {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 42px;
+  padding: clamp(42px, 5vw, 72px) clamp(30px, 4vw, 54px) 42px;
+  background: var(--linen);
+}
+
+.album-details h2 {
+  margin: 0;
+  font-size: clamp(48px, 6vw, 76px);
+  font-weight: 500;
+  line-height: 0.96;
+}
+
+.album-description {
+  margin: 24px 0 0;
+  color: var(--muted);
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 1.65;
+}
+
+.album-footer {
+  display: grid;
+  gap: 28px;
+}
+
+.album-progress {
+  display: grid;
+  grid-template-columns: auto minmax(32px, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  color: var(--sage);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+}
+
+.album-progress-line {
+  height: 1px;
+  background: var(--line);
+}
+
+.album-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.album-controls[hidden] {
+  display: none;
+}
+
+.album-controls button,
+.album-close {
+  display: inline-grid;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  place-items: center;
+}
+
+.album-controls button {
+  width: 48px;
+  height: 48px;
+  border-color: var(--line);
+  color: var(--sage);
+  font-size: 20px;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.album-controls button:hover {
+  background: var(--sage);
+  color: var(--shell);
+  transform: translateY(-1px);
+}
+
+.album-controls button:focus-visible,
+.album-close:focus-visible {
+  outline: 3px solid var(--clay);
+  outline-offset: 3px;
+}
+
+.album-inquiry {
+  width: fit-content;
+  margin-top: 0;
+}
+
+.album-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 3;
+  width: 46px;
+  height: 46px;
+  border-color: rgba(48, 45, 40, 0.2);
+  background: rgba(251, 248, 242, 0.82);
+  color: var(--ink);
+  backdrop-filter: blur(10px);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.album-close:hover {
+  background: var(--shell);
+  transform: rotate(4deg);
+}
+
+.album-close span {
+  position: absolute;
+  width: 18px;
+  height: 1px;
+  background: currentColor;
+}
+
+.album-close span:first-child {
+  transform: rotate(45deg);
+}
+
+.album-close span:last-child {
+  transform: rotate(-45deg);
+}
+
+@keyframes album-enter {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes album-backdrop-enter {
+  from {
+    background: rgba(27, 24, 20, 0);
+    backdrop-filter: blur(0);
+  }
 }
 
 .about {
@@ -639,6 +921,28 @@ figcaption {
     grid-template-columns: 1fr;
     align-items: start;
   }
+
+  .album-dialog {
+    width: min(780px, calc(100vw - 28px));
+    height: min(920px, calc(100dvh - 28px));
+  }
+
+  .album-stage {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  .album-details {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(200px, 0.5fr);
+    align-items: end;
+    gap: 30px;
+    padding: 32px;
+  }
+
+  .album-details h2 {
+    font-size: clamp(44px, 9vw, 70px);
+  }
 }
 
 @media (max-width: 760px) {
@@ -703,6 +1007,47 @@ figcaption {
     min-height: 430px;
   }
 
+  .album-dialog {
+    width: calc(100vw - 20px);
+    height: calc(100dvh - 20px);
+  }
+
+  .album-stage {
+    grid-template-rows: minmax(0, 58%) minmax(0, 42%);
+  }
+
+  .album-details {
+    display: flex;
+    gap: 22px;
+    overflow-y: auto;
+    padding: 28px 24px 24px;
+  }
+
+  .album-details .eyebrow {
+    margin-bottom: 10px;
+  }
+
+  .album-details h2 {
+    padding-right: 42px;
+    font-size: clamp(42px, 15vw, 62px);
+  }
+
+  .album-description {
+    margin-top: 14px;
+    font-size: 15px;
+  }
+
+  .album-footer {
+    gap: 18px;
+  }
+
+  .album-close {
+    top: 12px;
+    right: 12px;
+    width: 42px;
+    height: 42px;
+  }
+
   .steps li {
     grid-template-columns: 46px 1fr;
   }
@@ -715,5 +1060,20 @@ figcaption {
 
   .site-footer nav {
     flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
