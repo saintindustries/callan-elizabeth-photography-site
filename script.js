@@ -19,60 +19,53 @@ const albumNext = document.querySelector("[data-album-next]");
 const albumInquiry = document.querySelector("[data-album-inquiry]");
 const albumTriggers = document.querySelectorAll("[data-album]");
 
+function buildAlbumImages(directory, total, altLabel) {
+  return Array.from({ length: total }, (_, index) => {
+    const number = String(index + 1).padStart(2, "0");
+
+    return {
+      src: `/assets/galleries/${directory}/${number}.jpg`,
+      alt: `${altLabel}, photograph ${index + 1} of ${total}`,
+    };
+  });
+}
+
 const albums = {
   families: {
     kicker: "Family sessions",
     title: "Families",
     description: "The closeness, the movement, and the small in-between moments that make this season unmistakably yours.",
     inquiry: "Inquire about a family session",
-    images: [
-      {
-        src: "/assets/galleries/families/01.jpg",
-        alt: "A mother smiling with her two young children outdoors",
-      },
-    ],
+    images: buildAlbumImages("families", 34, "A warm, candid family session"),
   },
   couples: {
     kicker: "Couples sessions",
     title: "Couples",
     description: "Honest photographs with room for affection, laughter, and all the quiet ways you already know one another.",
     inquiry: "Inquire about a couples session",
-    images: [
-      {
-        src: "/assets/galleries/couples/01.jpg",
-        alt: "A couple embracing in a black and white portrait",
-      },
-    ],
+    images: buildAlbumImages("couples", 21, "A natural, affectionate couples session"),
   },
   portraits: {
     kicker: "Portrait sessions",
     title: "Portraits",
     description: "Relaxed, expressive portraits shaped by natural light and the confidence that comes from feeling like yourself.",
     inquiry: "Inquire about a portrait session",
-    images: [
-      {
-        src: "/assets/galleries/portraits/01.jpg",
-        alt: "A smiling outdoor portrait with a soft green background",
-      },
-    ],
+    images: buildAlbumImages("portraits", 25, "An expressive natural-light portrait"),
   },
   pets: {
     kicker: "Pet sessions",
     title: "Pets",
     description: "The familiar expressions and faithful companionship that deserve a permanent place in your family story.",
     inquiry: "Inquire about a pet session",
-    images: [
-      {
-        src: "/assets/galleries/pets/01.jpg",
-        alt: "A golden retriever sitting in the grass",
-      },
-    ],
+    images: buildAlbumImages("pets", 15, "A heartfelt pet session"),
   },
 };
 
 let activeAlbum = null;
 let activeImageIndex = 0;
 let lastAlbumTrigger = null;
+let swipeStartX = null;
+let swipeStartY = null;
 
 function syncHeader() {
   header.classList.toggle("is-scrolled", window.scrollY > 12);
@@ -116,6 +109,12 @@ function renderAlbumImage() {
   if (albumImage.complete) {
     albumImage.classList.remove("is-changing");
   }
+
+  [-1, 1].forEach((offset) => {
+    const preloadIndex = (activeImageIndex + offset + activeAlbum.images.length) % activeAlbum.images.length;
+    const preloadImage = new Image();
+    preloadImage.src = activeAlbum.images[preloadIndex].src;
+  });
 }
 
 function openAlbum(albumKey, trigger) {
@@ -168,6 +167,28 @@ albumImage.addEventListener("load", () => {
 albumClose.addEventListener("click", closeAlbum);
 albumPrevious.addEventListener("click", () => stepAlbum(-1));
 albumNext.addEventListener("click", () => stepAlbum(1));
+
+albumPhotoFrame.addEventListener("touchstart", (event) => {
+  const touch = event.changedTouches[0];
+  swipeStartX = touch.clientX;
+  swipeStartY = touch.clientY;
+}, { passive: true });
+
+albumPhotoFrame.addEventListener("touchend", (event) => {
+  if (swipeStartX === null || swipeStartY === null) {
+    return;
+  }
+
+  const touch = event.changedTouches[0];
+  const horizontalDistance = touch.clientX - swipeStartX;
+  const verticalDistance = touch.clientY - swipeStartY;
+  swipeStartX = null;
+  swipeStartY = null;
+
+  if (Math.abs(horizontalDistance) > 48 && Math.abs(horizontalDistance) > Math.abs(verticalDistance)) {
+    stepAlbum(horizontalDistance > 0 ? -1 : 1);
+  }
+}, { passive: true });
 
 albumInquiry.addEventListener("click", (event) => {
   event.preventDefault();
