@@ -95,8 +95,7 @@ a {
 }
 
 .site-nav a,
-.site-footer nav a,
-.instagram-link {
+.site-footer nav a {
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.15em;
@@ -109,8 +108,7 @@ a {
 }
 
 .site-nav a::after,
-.site-footer nav a::after,
-.instagram-link::after {
+.site-footer nav a::after {
   content: "";
   display: block;
   height: 1px;
@@ -121,8 +119,7 @@ a {
 }
 
 .site-nav a:hover::after,
-.site-footer nav a:hover::after,
-.instagram-link:hover::after {
+.site-footer nav a:hover::after {
   width: 100%;
 }
 
@@ -1130,10 +1127,6 @@ figcaption {
   display: flex;
   flex-wrap: wrap;
   gap: 16px 28px;
-}
-
-.instagram-link {
-  color: var(--sage);
 }
 
 @media (max-width: 1000px) {
