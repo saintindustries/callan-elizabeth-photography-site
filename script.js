@@ -397,6 +397,15 @@ form.addEventListener("submit", async (event) => {
   const sessionType = String(data.get("sessionType") || "").trim();
   const message = String(data.get("message") || "").trim();
   const honeypot = String(data.get("_honey") || "").trim();
+  const submittedAtEastern = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short",
+  }).format(new Date());
 
   if (honeypot) {
     form.reset();
@@ -423,6 +432,7 @@ form.addEventListener("submit", async (event) => {
         Email: email,
         "Session Type": sessionType,
         Message: message,
+        "Submitted (Eastern Time)": submittedAtEastern,
         _replyto: email,
         _subject: `Website inquiry — ${name}`,
         _template: "basic",
