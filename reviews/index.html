@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Leave a Review | Callan Elizabeth Photography</title>
+    <meta name="description" content="Share your experience with Callan Elizabeth Photography.">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#fbf8f2">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/reviews/reviews.css?v=20260801-live">
+  </head>
+  <body>
+    <main class="review-page">
+      <header class="review-header">
+        <a class="review-brand" href="/" aria-label="Callan Elizabeth Photography home">
+          <span>Callan Elizabeth</span>
+          <small>Photography</small>
+        </a>
+      </header>
+
+      <section class="review-intro" aria-labelledby="review-page-title">
+        <div class="intro-copy">
+          <p class="eyebrow">A Few Kind Words</p>
+          <h1 id="review-page-title">Tell me what these photographs mean to you.</h1>
+          <p class="intro-text">Thank you for trusting me with a piece of your story. Your honest words help future clients understand what it feels like to be in front of my camera—and help me keep creating work that matters.</p>
+          <div class="privacy-note">
+            <span aria-hidden="true">01</span>
+            <p>Your email is kept private. Only your name, session type, rating, and review may be shared publicly with your permission.</p>
+          </div>
+        </div>
+
+        <form class="review-form" data-review-form>
+          <div class="form-heading">
+            <p class="eyebrow">Share Your Experience</p>
+            <h2>Leave a review</h2>
+          </div>
+
+          <div class="field-row">
+            <label>
+              Your name
+              <input name="displayName" type="text" autocomplete="name" required minlength="2" maxlength="80" placeholder="How should your name appear?">
+            </label>
+            <label>
+              Email <span class="private-label">Private</span>
+              <input name="email" type="email" autocomplete="email" required maxlength="160" placeholder="you@email.com">
+            </label>
+          </div>
+
+          <div class="field-row">
+            <label>
+              Session type
+              <select name="sessionType" required>
+                <option value="" selected disabled>Select your session</option>
+                <option>Family Session</option>
+                <option>Couples Session</option>
+                <option>Portrait Session</option>
+                <option>Pets &amp; Animals</option>
+                <option>Other</option>
+              </select>
+            </label>
+            <label>
+              Session date <span class="optional-label">Optional</span>
+              <input name="sessionDate" type="date">
+            </label>
+          </div>
+
+          <fieldset class="rating-field">
+            <legend>Your rating</legend>
+            <div class="rating-options" data-rating-options aria-label="5 out of 5 stars">
+              <label class="is-active"><input type="radio" name="rating" value="1"><span aria-hidden="true">★</span><span class="sr-only">1 star</span></label>
+              <label class="is-active"><input type="radio" name="rating" value="2"><span aria-hidden="true">★</span><span class="sr-only">2 stars</span></label>
+              <label class="is-active"><input type="radio" name="rating" value="3"><span aria-hidden="true">★</span><span class="sr-only">3 stars</span></label>
+              <label class="is-active"><input type="radio" name="rating" value="4"><span aria-hidden="true">★</span><span class="sr-only">4 stars</span></label>
+              <label class="is-active"><input type="radio" name="rating" value="5" checked><span aria-hidden="true">★</span><span class="sr-only">5 stars</span></label>
+            </div>
+          </fieldset>
+
+          <label>
+            Your review
+            <textarea name="review" rows="7" required minlength="40" maxlength="1200" placeholder="What stood out about your experience? How did the photographs make you feel?"></textarea>
+            <span class="field-help">A few thoughtful sentences are perfect.</span>
+          </label>
+
+          <label class="consent-field">
+            <input name="consent" type="checkbox" required>
+            <span>I give Callan Elizabeth Photography permission to share this review publicly on the website.</span>
+          </label>
+
+          <label class="honeypot" aria-hidden="true">
+            Company website
+            <input name="companyWebsite" type="text" tabindex="-1" autocomplete="off">
+          </label>
+
+          <button class="submit-button" type="submit" data-submit-button>Submit Review</button>
+          <p class="form-status" data-form-status role="status" aria-live="polite">Your review will be added to Callan’s website after you submit it.</p>
+        </form>
+      </section>
+
+      <footer class="review-footer">
+        <a class="review-brand footer-brand" href="/">
+          <span>Callan Elizabeth</span>
+          <small>Photography</small>
+        </a>
+        <p>Timeless photographs for the moments you never want to lose.</p>
+      </footer>
+    </main>
+    <script src="/reviews/reviews.js?v=20260801-live"></script>
+  </body>
+</html>

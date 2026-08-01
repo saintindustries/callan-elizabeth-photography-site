@@ -928,6 +928,15 @@ h1 {
 .review-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+}
+
+.review-grid.has-submitted-reviews {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.review-grid.has-submitted-reviews .featured-review {
+  grid-column: 1 / -1;
 }
 
 figure {
@@ -955,6 +964,30 @@ figcaption {
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.submitted-review {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  padding: clamp(30px, 4vw, 54px);
+}
+
+.submitted-review blockquote {
+  margin-top: 18px;
+  font-size: clamp(24px, 2.5vw, 34px);
+}
+
+.submitted-review figcaption {
+  margin-top: auto;
+  padding-top: 34px;
+}
+
+.review-stars {
+  margin: 0;
+  color: var(--clay);
+  font-size: 17px;
+  letter-spacing: 0.18em;
 }
 
 .contact {
@@ -1236,6 +1269,10 @@ figcaption {
 
   .gallery-grid,
   .review-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .review-grid.has-submitted-reviews {
     grid-template-columns: 1fr;
   }
 

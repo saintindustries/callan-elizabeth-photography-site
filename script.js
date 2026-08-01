@@ -6,6 +6,8 @@ const formNote = document.querySelector("[data-form-note]");
 const formButton = form.querySelector(".form-button");
 const contactEndpoint = "https://formsubmit.co/ajax/Callan.sovik@gmail.com";
 const contactEmail = "Callan.sovik@gmail.com";
+const reviewEndpoint = "https://callan-elizabeth-reviews.new-clock-7578.chatgpt.site/api/reviews";
+const reviewGrid = document.querySelector("[data-review-grid]");
 const albumDialog = document.querySelector("[data-album-dialog]");
 const albumClose = document.querySelector("[data-album-close]");
 const albumBrowser = document.querySelector("[data-album-browser]");
@@ -29,6 +31,50 @@ const albumPrevious = document.querySelector("[data-album-previous]");
 const albumNext = document.querySelector("[data-album-next]");
 const albumInquiryLinks = document.querySelectorAll("[data-album-inquiry]");
 const albumTriggers = document.querySelectorAll("[data-album]");
+
+function createSubmittedReview(review) {
+  const figure = document.createElement("figure");
+  const stars = document.createElement("p");
+  const quote = document.createElement("blockquote");
+  const caption = document.createElement("figcaption");
+  const rating = Math.max(1, Math.min(5, Number(review.rating) || 5));
+
+  figure.className = "submitted-review";
+  stars.className = "review-stars";
+  stars.setAttribute("aria-label", `${rating} out of 5 stars`);
+  stars.textContent = "★".repeat(rating);
+  quote.textContent = review.review;
+  caption.textContent = `${review.displayName} · ${review.sessionType}`;
+  figure.append(stars, quote, caption);
+
+  return figure;
+}
+
+async function loadSubmittedReviews() {
+  if (!reviewGrid) {
+    return;
+  }
+
+  try {
+    const response = await fetch(reviewEndpoint, {
+      headers: { Accept: "application/json" },
+    });
+    const result = await response.json();
+
+    if (!response.ok || !Array.isArray(result.reviews) || !result.reviews.length) {
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    result.reviews.forEach((review) => fragment.append(createSubmittedReview(review)));
+    reviewGrid.append(fragment);
+    reviewGrid.classList.add("has-submitted-reviews");
+  } catch (error) {
+    // Keep the existing featured testimonial visible if the live feed is unavailable.
+  }
+}
+
+loadSubmittedReviews();
 
 function buildAlbumImages(directory, total, altLabel, descriptions = []) {
   return Array.from({ length: total }, (_, index) => {
