@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css?v=20260801-live-reviews">
+    <link rel="stylesheet" href="/styles.css?v=20260801-review-carousel">
   </head>
   <body>
     <header class="site-header" data-header>
@@ -113,15 +113,25 @@
       </section>
 
       <section class="section reviews" id="reviews">
-        <div class="section-heading">
-          <p class="eyebrow">Kind Words</p>
-          <h2>Loved by the people I photograph</h2>
+        <div class="reviews-heading-row">
+          <div class="section-heading">
+            <p class="eyebrow">Kind Words</p>
+            <h2>Loved by the people I photograph</h2>
+          </div>
+          <div class="review-controls" data-review-controls hidden>
+            <p class="review-position" data-review-position aria-live="polite"></p>
+            <button class="review-arrow" type="button" data-review-previous aria-label="Show previous reviews">←</button>
+            <button class="review-arrow" type="button" data-review-next aria-label="Show next reviews">→</button>
+          </div>
         </div>
-        <div class="review-grid" data-review-grid>
-          <figure class="featured-review">
-            <blockquote>Callan did a phenomenal job. She perfectly captured the images we were going for and brought the inspiration we showed her to life. She even went more than waist-deep into a mucky stream to get some of these photos for us. She was hardcore and did whatever it took to get the shot. We were absolutely thrilled. Out of everybody who has ever taken photos for us, she is the best.</blockquote>
-            <figcaption>Nathan &amp; Victoria St. John · Couples Session</figcaption>
-          </figure>
+        <div class="review-viewport" data-review-viewport>
+          <div class="review-grid" data-review-grid>
+            <figure class="featured-review">
+              <p class="review-stars" aria-label="5 out of 5 stars">★★★★★</p>
+              <blockquote>Callan did a phenomenal job. She perfectly captured the images we were going for and brought the inspiration we showed her to life. She even went more than waist-deep into a mucky stream to get some of these photos for us. She was hardcore and did whatever it took to get the shot. We were absolutely thrilled. Out of everybody who has ever taken photos for us, she is the best.</blockquote>
+              <figcaption>Nathan &amp; Victoria St. John · Couples Session</figcaption>
+            </figure>
+          </div>
         </div>
       </section>
 
@@ -243,6 +253,6 @@
       </div>
     </dialog>
 
-    <script src="/script.js?v=20260801-live-reviews"></script>
+    <script src="/script.js?v=20260801-review-carousel"></script>
   </body>
 </html>

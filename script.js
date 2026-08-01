@@ -8,6 +8,11 @@ const contactEndpoint = "https://formsubmit.co/ajax/Callan.sovik@gmail.com";
 const contactEmail = "Callan.sovik@gmail.com";
 const reviewEndpoint = "https://callan-elizabeth-reviews.new-clock-7578.chatgpt.site/api/reviews";
 const reviewGrid = document.querySelector("[data-review-grid]");
+const reviewViewport = document.querySelector("[data-review-viewport]");
+const reviewControls = document.querySelector("[data-review-controls]");
+const reviewPrevious = document.querySelector("[data-review-previous]");
+const reviewNext = document.querySelector("[data-review-next]");
+const reviewPosition = document.querySelector("[data-review-position]");
 const albumDialog = document.querySelector("[data-album-dialog]");
 const albumClose = document.querySelector("[data-album-close]");
 const albumBrowser = document.querySelector("[data-album-browser]");
@@ -31,6 +36,89 @@ const albumPrevious = document.querySelector("[data-album-previous]");
 const albumNext = document.querySelector("[data-album-next]");
 const albumInquiryLinks = document.querySelectorAll("[data-album-inquiry]");
 const albumTriggers = document.querySelectorAll("[data-album]");
+
+let reviewIndex = 0;
+let reviewScrollFrame;
+
+function getVisibleReviewCount() {
+  if (window.matchMedia("(max-width: 680px)").matches) {
+    return 1;
+  }
+  if (window.matchMedia("(max-width: 1040px)").matches) {
+    return 2;
+  }
+  return 3;
+}
+
+function updateReviewCarousel({ move = true } = {}) {
+  if (!reviewGrid || !reviewViewport || !reviewControls) {
+    return;
+  }
+
+  const reviews = Array.from(reviewGrid.children);
+  const visibleCount = Math.min(getVisibleReviewCount(), reviews.length);
+  const maximumIndex = Math.max(0, reviews.length - visibleCount);
+  reviewIndex = Math.min(reviewIndex, maximumIndex);
+  const gapShare = (18 * Math.max(0, visibleCount - 1)) / Math.max(1, visibleCount);
+  reviewGrid.style.setProperty(
+    "--review-card-width",
+    visibleCount > 1 ? `calc(${100 / visibleCount}% - ${gapShare}px)` : "100%"
+  );
+  reviewControls.hidden = reviews.length <= visibleCount;
+
+  if (move && reviews[reviewIndex]) {
+    reviewViewport.scrollTo({
+      left: reviews[reviewIndex].offsetLeft - reviewGrid.offsetLeft,
+      behavior: "smooth",
+    });
+  }
+
+  if (reviewPrevious && reviewNext) {
+    reviewPrevious.disabled = reviewIndex === 0;
+    reviewNext.disabled = reviewIndex === maximumIndex;
+  }
+
+  if (reviewPosition) {
+    const first = reviews.length ? reviewIndex + 1 : 0;
+    const last = Math.min(reviews.length, reviewIndex + visibleCount);
+    reviewPosition.textContent = `${first}–${last} of ${reviews.length}`;
+  }
+}
+
+reviewPrevious?.addEventListener("click", () => {
+  reviewIndex = Math.max(0, reviewIndex - getVisibleReviewCount());
+  updateReviewCarousel();
+});
+
+reviewNext?.addEventListener("click", () => {
+  const reviewCount = reviewGrid?.children.length || 0;
+  const visibleCount = Math.min(getVisibleReviewCount(), reviewCount);
+  reviewIndex = Math.min(Math.max(0, reviewCount - visibleCount), reviewIndex + visibleCount);
+  updateReviewCarousel();
+});
+
+window.addEventListener("resize", () => updateReviewCarousel());
+
+reviewViewport?.addEventListener("scroll", () => {
+  window.cancelAnimationFrame(reviewScrollFrame);
+  reviewScrollFrame = window.requestAnimationFrame(() => {
+    const reviews = Array.from(reviewGrid?.children || []);
+    const currentLeft = reviewViewport.scrollLeft;
+    let closestIndex = 0;
+    let closestDistance = Number.POSITIVE_INFINITY;
+
+    reviews.forEach((review, index) => {
+      const distance = Math.abs(review.offsetLeft - reviewGrid.offsetLeft - currentLeft);
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestIndex = index;
+      }
+    });
+
+    reviewIndex = closestIndex;
+    updateReviewCarousel({ move: false });
+  });
+});
 
 function createSubmittedReview(review) {
   const figure = document.createElement("figure");
@@ -69,11 +157,13 @@ async function loadSubmittedReviews() {
     result.reviews.forEach((review) => fragment.append(createSubmittedReview(review)));
     reviewGrid.append(fragment);
     reviewGrid.classList.add("has-submitted-reviews");
+    updateReviewCarousel({ move: false });
   } catch (error) {
     // Keep the existing featured testimonial visible if the live feed is unavailable.
   }
 }
 
+updateReviewCarousel({ move: false });
 loadSubmittedReviews();
 
 function buildAlbumImages(directory, total, altLabel, descriptions = []) {
