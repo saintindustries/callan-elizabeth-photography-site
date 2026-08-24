@@ -210,15 +210,43 @@ h1 {
   box-shadow: 0 0 0 3px rgba(105, 119, 98, 0.12);
 }
 
+.form-field.has-error input,
+.form-field.has-error select,
+.form-field.has-error textarea {
+  border-color: #a74f3f;
+  box-shadow: 0 0 0 3px rgba(167, 79, 63, 0.1);
+}
+
+.field-error {
+  display: none;
+  margin-top: 8px;
+  color: #9d4f3f;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.4;
+  text-transform: none;
+}
+
+.field-error:not(:empty) {
+  display: block;
+}
+
 .review-form textarea {
   min-height: 178px;
   resize: vertical;
   line-height: 1.5;
 }
 
-.field-help {
-  display: block;
+.field-help-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
   margin-top: 8px;
+}
+
+.field-help,
+.character-count {
   color: var(--muted);
   font-size: 12px;
   font-weight: 400;
@@ -226,10 +254,20 @@ h1 {
   text-transform: none;
 }
 
+.character-count {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+}
+
 .rating-field {
   margin: 0 0 24px;
   border: 0;
   padding: 0;
+}
+
+.rating-field.has-error {
+  border-left: 3px solid #a74f3f;
+  padding-left: 14px;
 }
 
 .rating-options {
@@ -292,6 +330,20 @@ h1 {
   height: 18px;
   margin: 1px 0 0;
   accent-color: var(--sage);
+}
+
+.consent-wrapper {
+  margin-bottom: 28px;
+}
+
+.consent-wrapper .consent-field {
+  margin-bottom: 0 !important;
+}
+
+.consent-wrapper.has-error {
+  border-left: 3px solid #a74f3f;
+  background: rgba(167, 79, 63, 0.045);
+  padding: 10px 12px;
 }
 
 .honeypot {

@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/reviews/reviews.css?v=20260801-live">
+    <link rel="stylesheet" href="/reviews/reviews.css?v=20260824-validated-reviews">
   </head>
   <body>
     <main class="review-page">
@@ -33,27 +33,29 @@
           </div>
         </div>
 
-        <form class="review-form" data-review-form>
+        <form class="review-form" data-review-form novalidate>
           <div class="form-heading">
             <p class="eyebrow">Share Your Experience</p>
             <h2>Leave a review</h2>
           </div>
 
           <div class="field-row">
-            <label>
+            <label class="form-field" data-field-wrapper="displayName">
               Your name
-              <input name="displayName" type="text" autocomplete="name" required minlength="2" maxlength="80" placeholder="How should your name appear?">
+              <input id="review-name" name="displayName" type="text" autocomplete="name" required minlength="2" maxlength="80" placeholder="How should your name appear?" aria-describedby="displayName-error">
+              <span class="field-error" id="displayName-error" data-field-error="displayName" aria-live="polite"></span>
             </label>
-            <label>
+            <label class="form-field" data-field-wrapper="email">
               Email <span class="private-label">Private</span>
-              <input name="email" type="email" autocomplete="email" required maxlength="160" placeholder="you@email.com">
+              <input id="review-email" name="email" type="email" autocomplete="email" required maxlength="160" placeholder="you@email.com" aria-describedby="email-error">
+              <span class="field-error" id="email-error" data-field-error="email" aria-live="polite"></span>
             </label>
           </div>
 
           <div class="field-row">
-            <label>
+            <label class="form-field" data-field-wrapper="sessionType">
               Session type
-              <select name="sessionType" required>
+              <select id="review-session-type" name="sessionType" required aria-describedby="sessionType-error">
                 <option value="" selected disabled>Select your session</option>
                 <option>Family Session</option>
                 <option>Couples Session</option>
@@ -61,14 +63,16 @@
                 <option>Pets &amp; Animals</option>
                 <option>Other</option>
               </select>
+              <span class="field-error" id="sessionType-error" data-field-error="sessionType" aria-live="polite"></span>
             </label>
-            <label>
+            <label class="form-field" data-field-wrapper="sessionDate">
               Session date <span class="optional-label">Optional</span>
-              <input name="sessionDate" type="date">
+              <input id="review-session-date" name="sessionDate" type="date" aria-describedby="sessionDate-error">
+              <span class="field-error" id="sessionDate-error" data-field-error="sessionDate" aria-live="polite"></span>
             </label>
           </div>
 
-          <fieldset class="rating-field">
+          <fieldset class="rating-field" data-field-wrapper="rating" aria-describedby="rating-error">
             <legend>Your rating</legend>
             <div class="rating-options" data-rating-options aria-label="5 out of 5 stars">
               <label class="is-active"><input type="radio" name="rating" value="1"><span aria-hidden="true">★</span><span class="sr-only">1 star</span></label>
@@ -77,18 +81,23 @@
               <label class="is-active"><input type="radio" name="rating" value="4"><span aria-hidden="true">★</span><span class="sr-only">4 stars</span></label>
               <label class="is-active"><input type="radio" name="rating" value="5" checked><span aria-hidden="true">★</span><span class="sr-only">5 stars</span></label>
             </div>
+            <span class="field-error" id="rating-error" data-field-error="rating" aria-live="polite"></span>
           </fieldset>
 
-          <label>
+          <label class="form-field" data-field-wrapper="review">
             Your review
-            <textarea name="review" rows="7" required minlength="40" maxlength="1200" placeholder="What stood out about your experience? How did the photographs make you feel?"></textarea>
-            <span class="field-help">A few thoughtful sentences are perfect.</span>
+            <textarea id="review-message" name="review" rows="7" required minlength="40" maxlength="1200" placeholder="What stood out about your experience? How did the photographs make you feel?" aria-describedby="review-help review-error"></textarea>
+            <span class="field-help-row"><span class="field-help" id="review-help">A few thoughtful sentences are perfect.</span><span class="character-count" data-character-count>0 / 1,200</span></span>
+            <span class="field-error" id="review-error" data-field-error="review" aria-live="polite"></span>
           </label>
 
-          <label class="consent-field">
-            <input name="consent" type="checkbox" required>
-            <span>I give Callan Elizabeth Photography permission to share this review publicly on the website.</span>
-          </label>
+          <div class="consent-wrapper" data-field-wrapper="consent">
+            <label class="consent-field">
+              <input id="review-consent" name="consent" type="checkbox" required aria-describedby="consent-error">
+              <span>I give Callan Elizabeth Photography permission to share this review publicly on the website.</span>
+            </label>
+            <span class="field-error" id="consent-error" data-field-error="consent" aria-live="polite"></span>
+          </div>
 
           <label class="honeypot" aria-hidden="true">
             Company website
@@ -96,7 +105,7 @@
           </label>
 
           <button class="submit-button" type="submit" data-submit-button>Submit Review</button>
-          <p class="form-status" data-form-status role="status" aria-live="polite">Your review will be added to Callan’s website after you submit it.</p>
+          <p class="form-status" data-form-status role="status" aria-live="polite">Your answers are saved on this device until the website safely receives your review.</p>
         </form>
       </section>
 
@@ -108,6 +117,6 @@
         <p>Timeless photographs for the moments you never want to lose.</p>
       </footer>
     </main>
-    <script src="/reviews/reviews.js?v=20260824-durable-reviews"></script>
+    <script src="/reviews/reviews.js?v=20260824-validated-reviews"></script>
   </body>
 </html>
